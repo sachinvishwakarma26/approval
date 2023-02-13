@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+    stages {
+        stage("Build") {
+            steps {
+                echo "Your build steps go here"
+            }
+        }
+        stage("Approval") {
+            steps {
+                script {
+                    def userInput = input message: "Do you want to proceed with deployment?", ok: "Proceed", parameters: [
+                        [$class: 'BooleanParameterDefinition', defaultValue: false, description: '', name: 'proceed']
+                    ]
+                    if (userInput.proceed) {
+                        echo "Deployment approved"
+                        stage("Deploy") {
+                            steps {
+                                echo "Your deployment steps go here"
+                            }
+                        }
+                    } else {
+                        echo "Deployment cancelled"
+                    }
+                }
+            }
+        }
+    }
+}
